@@ -18,15 +18,15 @@ public struct AES: Encryption, Decryption {
     let key:     AESKey
     let options: CCOptions
     
-    public func encryptedData(_ message: EncryptionMessage) throws -> Data {
+    public func encryptedData(_ message: DecryptedMessage) throws -> Data {
         try convertAESBytes(message: message, key: key, options: options, action: .encrypt)
     }
         
-    public func decryptedData(_ message: EncryptionMessage) throws -> Data {
+    public func decryptedData(_ message: EncryptedMessage) throws -> Data {
         try convertAESBytes(message: message, key: key, options: options, action: .decrypt)
     }
     
-    private func convertAESBytes(message: EncryptionMessage, key: AESKey, options: CCOptions, action: Action) throws -> Data {
+    private func convertAESBytes(message: EncryptionMessageProtocol, key: AESKey, options: CCOptions, action: Action) throws -> Data {
         let cryptLength = size_t(message.data.count + key.size)
         let keyLength   = size_t(key.size)
         var numBytesConverted: size_t = 0

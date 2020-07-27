@@ -9,6 +9,6 @@ import Foundation
 
 public protocol Decryption {
     
-    func decryptedData(_ message: EncryptionMessage) throws -> Data
+    func decryptedData(_ message: EncryptedMessage) throws -> Data
 
 }

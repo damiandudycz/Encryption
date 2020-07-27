@@ -17,11 +17,11 @@ public struct RSA: Encryption, Decryption {
         self.decryption = RSADecryption(privateKey: privateKey, padding: padding)
     }
     
-    public func encryptedData(_ message: EncryptionMessage) throws -> Data {
+    public func encryptedData(_ message: DecryptedMessage) throws -> Data {
         try encryption.encryptedData(message)
     }
     
-    public func decryptedData(_ message: EncryptionMessage) throws -> Data {
+    public func decryptedData(_ message: EncryptedMessage) throws -> Data {
         try decryption.decryptedData(message)
     }
     
@@ -37,9 +37,8 @@ public struct RSAEncryption: Encryption {
     let key:     RSAKey
     let padding: SecPadding
     
-    public func encryptedData(_ message: EncryptionMessage) throws -> Data {
-        guard message.isEncrypted == false else { throw EncryptionError.messageIsAlreadyEncrypted }
-        return try convertRSADataBytes(message: message, key: key.secureKey, padding: padding, action: .encrypt)
+    public func encryptedData(_ message: DecryptedMessage) throws -> Data {
+        try convertRSADataBytes(message: message, key: key.secureKey, padding: padding, action: .encrypt)
     }
     
 }
@@ -54,14 +53,13 @@ public struct RSADecryption: Decryption {
     let key:     RSAKey
     let padding: SecPadding
     
-    public func decryptedData(_ message: EncryptionMessage) throws -> Data {
-        guard message.isEncrypted else { throw EncryptionError.messageIsNotEncrypted }
-        return try convertRSADataBytes(message: message, key: key.secureKey, padding: padding, action: .decrypt)
+    public func decryptedData(_ message: EncryptedMessage) throws -> Data {
+        try convertRSADataBytes(message: message, key: key.secureKey, padding: padding, action: .decrypt)
     }
     
 }
 
-private func convertRSADataBytes(message: EncryptionMessage, key: SecKey, padding: SecPadding, action: Action) throws -> Data {
+private func convertRSADataBytes(message: EncryptionMessageProtocol, key: SecKey, padding: SecPadding, action: Action) throws -> Data {
     let dataArray = [UInt8](message.data)
     let blockSize = SecKeyGetBlockSize(key)
     var convertedBytes = [UInt8]()
