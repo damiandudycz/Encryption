@@ -17,12 +17,12 @@ public struct RSA: Encryption, Decryption {
         self.decryption = RSADecryption(privateKey: privateKey, padding: padding)
     }
     
-    public func encryptedMessage(_ message: EncryptionMessage) throws -> EncryptionMessage {
-        try encryption.encryptedMessage(message)
+    public func encryptedData(_ message: EncryptionMessage) throws -> Data {
+        try encryption.encryptedData(message)
     }
     
-    public func decryptedMessage(_ message: EncryptionMessage) throws -> EncryptionMessage {
-        try decryption.decryptedMessage(message)
+    public func decryptedData(_ message: EncryptionMessage) throws -> Data {
+        try decryption.decryptedData(message)
     }
     
 }
@@ -37,8 +37,8 @@ public struct RSAEncryption: Encryption {
     let key:     RSAKey
     let padding: SecPadding
     
-    public func encryptedMessage(_ message: EncryptionMessage) throws -> EncryptionMessage {
-        guard message.isEncrypted == false else { throw AESEncryptionError.messageIsAlreadyEncrypted }
+    public func encryptedData(_ message: EncryptionMessage) throws -> Data {
+        guard message.isEncrypted == false else { throw EncryptionError.messageIsAlreadyEncrypted }
         return try convertRSADataBytes(message: message, key: key.secureKey, padding: padding, action: .encrypt)
     }
     
@@ -54,14 +54,14 @@ public struct RSADecryption: Decryption {
     let key:     RSAKey
     let padding: SecPadding
     
-    public func decryptedMessage(_ message: EncryptionMessage) throws -> EncryptionMessage {
-        guard message.isEncrypted else { throw AESEncryptionError.messageIsNotEncrypted }
+    public func decryptedData(_ message: EncryptionMessage) throws -> Data {
+        guard message.isEncrypted else { throw EncryptionError.messageIsNotEncrypted }
         return try convertRSADataBytes(message: message, key: key.secureKey, padding: padding, action: .decrypt)
     }
     
 }
 
-private func convertRSADataBytes(message: EncryptionMessage, key: SecKey, padding: SecPadding, action: Action) throws -> EncryptionMessage {
+private func convertRSADataBytes(message: EncryptionMessage, key: SecKey, padding: SecPadding, action: Action) throws -> Data {
     let dataArray = [UInt8](message.data)
     let blockSize = SecKeyGetBlockSize(key)
     var convertedBytes = [UInt8]()
@@ -84,5 +84,5 @@ private func convertRSADataBytes(message: EncryptionMessage, key: SecKey, paddin
         convertedBytes.append(contentsOf: dataBuffer[0..<dataLength])
     }
     let data = Data(bytes: convertedBytes, count: convertedBytes.count)
-    return EncryptionMessage(data: data, isEncrypted: action == .encrypt, encoding: message.encoding)
+    return data
 }

@@ -8,13 +8,17 @@
 import Foundation
 import CommonCrypto
 
-public enum AESEncryptionError: Error {
-    
-    case invalidBase64String
-    case stringToDataConversionFailed
+public enum EncryptionError: Error {
+
     case dataToStringConversionFailed
+    case stringToDataConversionFailed
     case messageIsNotEncrypted
     case messageIsAlreadyEncrypted
+
+}
+
+public enum AESEncryptionError: Error {
+    
     case encryptionOrDecryptionFailed(status: CCCryptorStatus)
 
 }
@@ -28,9 +32,5 @@ public enum RSAEncryptionError: Error {
     case invalidBase64String
     case chunkDecryptFailed(status: OSStatus)
     case chunkEncryptFailed(status: OSStatus)
-    case stringToDataConversionFailed
-    case dataToStringConversionFailed
-    case messageIsNotEncrypted
-    case messageIsAlreadyEncrypted
 
 }
