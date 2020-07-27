@@ -46,7 +46,7 @@ public struct AES: Encryption, Decryption {
         
         switch Int(cryptStatus) {
         case kCCSuccess: convertedBytes.removeSubrange(numBytesConverted..<convertedBytes.count)
-        default:         throw AESEncryptionError.encryptionOrDecryptionFailed
+        default: throw AESEncryptionError.encryptionOrDecryptionFailed(status: cryptStatus)
         }
         
         return EncryptionMessage(data: convertedBytes, isEncrypted: action == .encrypt, encoding: message.encoding)

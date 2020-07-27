@@ -10,13 +10,13 @@ import CommonCrypto
 
 public struct AESKey: Codable {
     
-    let size: Int
-    let secret: Data
+    let size:          Int
+    let secret:        Data
     let initialVector: Data
     
     public init(size: Int = kCCKeySizeAES128, secret: Data, initialVector: Data) {
-        self.size = size
-        self.secret = secret
+        self.size          = size
+        self.secret        = secret
         self.initialVector = initialVector
     }
     

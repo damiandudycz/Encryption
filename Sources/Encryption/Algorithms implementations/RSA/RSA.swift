@@ -30,11 +30,11 @@ public struct RSA: Encryption, Decryption {
 public struct RSAEncryption: Encryption {
 
     public init(publicKey key: RSAKey, padding: SecPadding) {
-        self.key = key
+        self.key     = key
         self.padding = padding
     }
     
-    let key: RSAKey
+    let key:     RSAKey
     let padding: SecPadding
     
     public func encryptedMessage(_ message: EncryptionMessage) throws -> EncryptionMessage {
@@ -47,11 +47,11 @@ public struct RSAEncryption: Encryption {
 public struct RSADecryption: Decryption {
 
     public init(privateKey key: RSAKey, padding: SecPadding) {
-        self.key = key
+        self.key     = key
         self.padding = padding
     }
     
-    let key: RSAKey
+    let key:     RSAKey
     let padding: SecPadding
     
     public func decryptedMessage(_ message: EncryptionMessage) throws -> EncryptionMessage {

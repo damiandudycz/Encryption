@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CommonCrypto
 
 public enum AESEncryptionError: Error {
     
@@ -14,7 +15,7 @@ public enum AESEncryptionError: Error {
     case dataToStringConversionFailed
     case messageIsNotEncrypted
     case messageIsAlreadyEncrypted
-    case encryptionOrDecryptionFailed
+    case encryptionOrDecryptionFailed(status: CCCryptorStatus)
 
 }
 

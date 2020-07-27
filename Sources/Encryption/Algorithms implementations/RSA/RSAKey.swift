@@ -9,9 +9,22 @@ import Foundation
 import Security
 
 /// Can represent Public or Private key.
-public struct RSAKey {
+public struct RSAKey: Codable {
     
+    private  let data:      Data
+    private  let isPublic:  Bool
     internal let secureKey: SecKey
+    
+    enum CodingKeys: String, CodingKey {
+        case data, isPublic
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        data      = try container.decode(Data.self, forKey: .data)
+        isPublic  = try container.decode(Bool.self, forKey: .data)
+        secureKey = try Self.loadSecureKey(data: data, isPublic: isPublic)
+    }
     
     /// param privateKey: Private key in Base64 format
     public init(privateKey: String) throws {
@@ -29,6 +42,12 @@ public struct RSAKey {
     }
 
     private init(data: Data, isPublic: Bool) throws {
+        self.data      = data
+        self.isPublic  = isPublic
+        self.secureKey = try Self.loadSecureKey(data: data, isPublic: isPublic)
+    }
+    
+    private static func loadSecureKey(data: Data, isPublic: Bool) throws -> SecKey {
         func stripKeyHeader(from keyData: Data) throws -> Data {
             let node: Asn1Parser.Node
             do { node = try Asn1Parser.parse(data: keyData) }
@@ -69,7 +88,7 @@ public struct RSAKey {
         }
         
         let dataWithoutHeader = try stripKeyHeader(from: data)
-        secureKey = try createKey(dataWithoutHeader, isPublic: isPublic)
+        return try createKey(dataWithoutHeader, isPublic: isPublic)
     }
     
 }
