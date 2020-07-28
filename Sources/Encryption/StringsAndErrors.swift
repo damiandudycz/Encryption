@@ -14,6 +14,7 @@ public enum EncryptionError: Error {
     case stringToDataConversionFailed
     case messageIsNotEncrypted
     case messageIsAlreadyEncrypted
+    case failedToLoadData
 
 }
 

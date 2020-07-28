@@ -11,7 +11,6 @@ import CommonCrypto
 public protocol EncryptionMessageProtocol {
     var data: Data { get }
     var encoding: String.Encoding { get }
-    func string() throws -> String
 }
 
 public struct DecryptedMessage: EncryptionMessageProtocol {
@@ -27,6 +26,13 @@ public struct DecryptedMessage: EncryptionMessageProtocol {
     public init(decryptedData data: Data, encoding: String.Encoding = .utf8) {
         self.encoding = encoding
         self.data = data
+    }
+    
+    public init(file fileName: String, in bundle: Bundle) throws {
+        guard let url = bundle.url(forResource: fileName, withExtension: nil), let data = try? Data(contentsOf: url) else {
+            throw EncryptionError.failedToLoadData
+        }
+        self.init(decryptedData: data)
     }
 
     public func encrypted(using encryption: Encryption) throws -> EncryptedMessage {
@@ -68,6 +74,13 @@ public struct EncryptedMessage: EncryptionMessageProtocol {
         self.data = data
     }
 
+    public init(file fileName: String, in bundle: Bundle) throws {
+        guard let url = bundle.url(forResource: fileName, withExtension: nil), let data = try? Data(contentsOf: url) else {
+            throw EncryptionError.failedToLoadData
+        }
+        self.init(encryptedData: data)
+    }
+
     public func decrypted(using decryption: Decryption) throws -> DecryptedMessage {
         let data: Data = try decrypt(using: decryption)
         return DecryptedMessage(decryptedData: data, encoding: encoding)
@@ -83,7 +96,7 @@ public struct EncryptedMessage: EncryptionMessageProtocol {
         return string
     }
 
-    public func string() throws -> String {
+    public var base64String: String {
         data.base64EncodedString()
     }
     
