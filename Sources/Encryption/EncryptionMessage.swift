@@ -44,10 +44,10 @@ public struct DecryptedMessage: EncryptionMessageProtocol {
         try encryption.encryptedData(self)
     }
 
+    /// returns Base64 representation of encrypted data.
     public func encrypt(using encryption: Encryption) throws -> String {
         let data: Data = try encrypt(using: encryption)
-        guard let string = String(data: data, encoding: encoding) else { throw EncryptionError.dataToStringConversionFailed }
-        return string
+        return data.base64EncodedString()
     }
     
     public func string() throws -> String {
@@ -64,8 +64,9 @@ public struct EncryptedMessage: EncryptionMessageProtocol {
     public let data: Data
     public let encoding: String.Encoding
 
+    /// encryptedString: Base64 representation of encrypted data.
     public init(encryptedString: String, encoding: String.Encoding = .utf8) throws {
-        guard let data = encryptedString.data(using: encoding) else { throw EncryptionError.stringToDataConversionFailed }
+        guard let data = Data(base64Encoded: encryptedString) else { throw EncryptionError.stringToDataConversionFailed }
         self.init(encryptedData: data, encoding: encoding)
     }
 
