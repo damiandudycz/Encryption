@@ -40,7 +40,9 @@ enum Asn1Parser {
     
     private static func parseNode(scanner: Scanner) throws -> Node {
         let firstByte = try scanner.consume(length: 1).firstByte
-        guard let nodeType = NodeType(rawValue: firstByte) else { throw ParserError.invalidType(value: firstByte) }
+        guard let nodeType = NodeType(rawValue: firstByte) else { 
+            throw ParserError.invalidType(value: firstByte)
+        }
         
         func length() throws -> Int { try scanner.consumeLength() }
         
@@ -88,7 +90,9 @@ private class Scanner {
     
     @discardableResult fileprivate func consume(length: Int) throws -> Data {
         guard length > 0 else { return Data() }
-        guard index + length <= data.count else { throw ScannerError.outOfBounds }
+        guard index + length <= data.count else { 
+            throw ScannerError.outOfBounds 
+        }
         let subdata = data.subdata(in: index..<index + length)
         index += length
         return subdata

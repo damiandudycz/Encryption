@@ -37,7 +37,9 @@ public struct RSAKey: Codable {
     }
 
     private init(base64Encoded base64String: String, isPublic: Bool) throws {
-        guard let data = Data(base64Encoded: base64String, options: [.ignoreUnknownCharacters]) else { throw RSAEncryptionError.invalidBase64String }
+        guard let data = Data(base64Encoded: base64String, options: [.ignoreUnknownCharacters]) else { 
+            throw RSAEncryptionError.invalidBase64String 
+        }
         try self.init(data: data, isPublic: isPublic)
     }
 
@@ -54,7 +56,9 @@ public struct RSAKey: Codable {
             catch { throw RSAEncryptionError.asn1ParsingFailed(error: error) }
             
             // Ensure the raw data is an ASN1 sequence
-            guard case .sequence(let nodes) = node else { throw RSAEncryptionError.invalidAsn1RootNode }
+            guard case .sequence(let nodes) = node else { 
+                throw RSAEncryptionError.invalidAsn1RootNode
+            }
             
             // Detect whether the sequence only has integers, in which case it's a headerless key
             func isNodeNotInteger(_ node: Asn1Parser.Node) -> Bool {
@@ -83,7 +87,9 @@ public struct RSAKey: Codable {
                 kSecReturnPersistentRef: true
             ]
             
-            guard let key = SecKeyCreateWithData(keyData as CFData, keyDict as CFDictionary, nil) else { throw RSAEncryptionError.keyCreateFailed }
+            guard let key = SecKeyCreateWithData(keyData as CFData, keyDict as CFDictionary, nil) else { 
+                throw RSAEncryptionError.keyCreateFailed 
+            }
             return key
         }
         

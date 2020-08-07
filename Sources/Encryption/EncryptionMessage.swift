@@ -19,7 +19,9 @@ public struct DecryptedMessage: EncryptionMessageProtocol {
     public let encoding: String.Encoding
 
     public init(decryptedString: String, encoding: String.Encoding = .utf8) throws {
-        guard let data = decryptedString.data(using: encoding) else { throw EncryptionError.stringToDataConversionFailed }
+        guard let data = decryptedString.data(using: encoding) else { 
+            throw EncryptionError.stringToDataConversionFailed 
+        }
         self.init(decryptedData: data, encoding: encoding)
     }
 
@@ -66,7 +68,9 @@ public struct EncryptedMessage: EncryptionMessageProtocol {
 
     /// encryptedString: Base64 representation of encrypted data.
     public init(encryptedString: String, encoding: String.Encoding = .utf8) throws {
-        guard let data = Data(base64Encoded: encryptedString) else { throw EncryptionError.stringToDataConversionFailed }
+        guard let data = Data(base64Encoded: encryptedString) else { 
+            throw EncryptionError.stringToDataConversionFailed 
+        }
         self.init(encryptedData: data, encoding: encoding)
     }
 
@@ -93,7 +97,9 @@ public struct EncryptedMessage: EncryptionMessageProtocol {
 
     public func decrypt(using decryption: Decryption) throws -> String {
         let data: Data = try decrypt(using: decryption)
-        guard let string = String(data: data, encoding: encoding) else { throw EncryptionError.dataToStringConversionFailed }
+        guard let string = String(data: data, encoding: encoding) else { 
+            throw EncryptionError.dataToStringConversionFailed 
+        }
         return string
     }
 
